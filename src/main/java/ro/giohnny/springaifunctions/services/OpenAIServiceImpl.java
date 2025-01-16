@@ -4,6 +4,7 @@ package ro.giohnny.springaifunctions.services;
 import org.springframework.ai.chat.messages.Message;
 import org.springframework.ai.chat.prompt.Prompt;
 import org.springframework.ai.chat.prompt.PromptTemplate;
+import org.springframework.ai.chat.prompt.SystemPromptTemplate;
 import org.springframework.ai.model.ModelOptions;
 import org.springframework.ai.model.ModelOptionsUtils;
 import org.springframework.ai.model.function.FunctionCallback;
@@ -41,12 +42,20 @@ public class OpenAIServiceImpl implements OpenAIService {
                         .function("CurrentWeather", new WeatherServiceFunction(weatherApiKey))
                         .description("Get the current weather in location")
                         .inputType(WeatherRequest.class)
+/*                        .responseConverter(response -> {
+                            String schema = ModelOptionsUtils.getJsonSchema(WeatherResponse.class, false);
+                            String json = ModelOptionsUtils.toJsonString(response);
+                            return schema + "\n" + json;
+                        })*/
                         .build()))
                 .build();
 
         Message userMessage = new PromptTemplate(question.question()).createMessage();
+        Message systemMessage = new SystemPromptTemplate("You are a weather service. You receive weather information from a service which gives you the information based on the metrics system." +
+                " When answering the weather in an imperial system country, you should convert the temperature to Fahrenheit and the wind speed to miles per hour. If you cannot retrieve information just display the response of the function called.").createMessage();
 
-        var response = openAiChatModel.call(new Prompt(List.of(userMessage), promptOptions));
+
+        var response = openAiChatModel.call(new Prompt(List.of(systemMessage, userMessage), promptOptions));
 
         return new Answer(response.getResult().getOutput().getContent());
     }

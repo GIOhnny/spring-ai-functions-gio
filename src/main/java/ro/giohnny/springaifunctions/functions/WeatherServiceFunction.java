@@ -27,9 +27,22 @@ public class WeatherServiceFunction implements Function<WeatherRequest, WeatherR
                 .baseUrl(WEATHER_URL)
                 .defaultHeaders(httpHeaders -> {
                     httpHeaders.set("Accept", "application/json");
-//                    httpHeaders.set("Content-Type", "application/json");
+                    httpHeaders.set("Content-Type", "application/json");
                 }).build();
 
+        try {
+            return restClient.get().uri(uriBuilder -> {
+                uriBuilder.queryParam("q", weatherRequest.location());
+                uriBuilder.queryParam("key", weatherApiKey);
+                return uriBuilder.build();
+            }).retrieve().body(WeatherResponse.class);
+        } catch (Exception e) {
+            System.out.println("Error occurred while fetching weather data: " + e.getMessage());
+            e.printStackTrace();
+            return null;
+        }
+
+/*
         return restClient.get().uri(uriBuilder -> {
             System.out.println("Building URI for weather request: " + weatherRequest);
 
@@ -38,6 +51,8 @@ public class WeatherServiceFunction implements Function<WeatherRequest, WeatherR
             System.out.println("URI: " + uriBuilder.build());
             return uriBuilder.build();
         }).retrieve().body(WeatherResponse.class);
+*/
+
     }
 }
 
