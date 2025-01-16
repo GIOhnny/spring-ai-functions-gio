@@ -1,9 +1,9 @@
-package guru.springframework.springaifunctions.controllers;
+package ro.giohnny.springaifunctions.controllers;
 
 
-import guru.springframework.springaifunctions.model.Answer;
-import guru.springframework.springaifunctions.model.Question;
-import guru.springframework.springaifunctions.services.OpenAIService;
+import ro.giohnny.springaifunctions.model.Answer;
+import ro.giohnny.springaifunctions.model.Question;
+import ro.giohnny.springaifunctions.services.OpenAIService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;

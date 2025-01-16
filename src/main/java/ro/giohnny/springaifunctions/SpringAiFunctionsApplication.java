@@ -1,4 +1,4 @@
-package guru.springframework.springaifunctions;
+package ro.giohnny.springaifunctions;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

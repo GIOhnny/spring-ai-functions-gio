@@ -1,4 +1,4 @@
-package guru.springframework.springaifunctions;
+package ro.giohnny.springaifunctions;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
