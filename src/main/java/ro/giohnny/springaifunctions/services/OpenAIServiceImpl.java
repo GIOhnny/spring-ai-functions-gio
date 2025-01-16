@@ -52,10 +52,10 @@ public class OpenAIServiceImpl implements OpenAIService {
 
         Message userMessage = new PromptTemplate(question.question()).createMessage();
         Message systemMessage = new SystemPromptTemplate("You are a weather service. You receive weather information from a service which gives you the information based on the metrics system." +
-                " When answering the weather in an imperial system country, you should convert the temperature to Fahrenheit and the wind speed to miles per hour. If you cannot retrieve information just display the response of the function called.").createMessage();
+                " When answering the weather in an imperial system country, you should convert the temperature to Fahrenheit and the wind speed to miles per hour.").createMessage();
 
 
-        var response = openAiChatModel.call(new Prompt(List.of(systemMessage, userMessage), promptOptions));
+        var response = openAiChatModel.call(new Prompt(List.of(userMessage, systemMessage), promptOptions));
 
         return new Answer(response.getResult().getOutput().getContent());
     }
