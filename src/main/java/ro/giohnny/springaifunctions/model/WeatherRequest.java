@@ -10,5 +10,5 @@ import com.fasterxml.jackson.annotation.JsonPropertyDescription;
  */
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonClassDescription("Weather API request")
-public record WeatherRequest(@JsonProperty(required = true) @JsonPropertyDescription("Country name") String country){
+public record WeatherRequest(@JsonProperty(required = true) @JsonPropertyDescription("location.name") String location){
 }

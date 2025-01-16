@@ -4,6 +4,8 @@ package ro.giohnny.springaifunctions.services;
 import org.springframework.ai.chat.messages.Message;
 import org.springframework.ai.chat.prompt.Prompt;
 import org.springframework.ai.chat.prompt.PromptTemplate;
+import org.springframework.ai.model.ModelOptions;
+import org.springframework.ai.model.ModelOptionsUtils;
 import org.springframework.ai.model.function.FunctionCallback;
 import org.springframework.ai.openai.OpenAiChatModel;
 import org.springframework.ai.openai.OpenAiChatOptions;
@@ -14,6 +16,8 @@ import ro.giohnny.springaifunctions.model.Question;
 import lombok.RequiredArgsConstructor;
 import org.springframework.ai.chat.model.ChatModel;
 import org.springframework.stereotype.Service;
+import ro.giohnny.springaifunctions.model.WeatherRequest;
+import ro.giohnny.springaifunctions.model.WeatherResponse;
 
 import java.util.List;
 
@@ -35,7 +39,8 @@ public class OpenAIServiceImpl implements OpenAIService {
         var promptOptions = OpenAiChatOptions.builder()
                 .functionCallbacks(List.of(FunctionCallback.builder()
                         .function("CurrentWeather", new WeatherServiceFunction(weatherApiKey))
-                        .description("Get the current weather for a location")
+                        .description("Get the current weather in location")
+                        .inputType(WeatherRequest.class)
                         .build()))
                 .build();
 

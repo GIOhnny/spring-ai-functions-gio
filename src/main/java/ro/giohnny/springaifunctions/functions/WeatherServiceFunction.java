@@ -33,9 +33,9 @@ public class WeatherServiceFunction implements Function<WeatherRequest, WeatherR
         return restClient.get().uri(uriBuilder -> {
             System.out.println("Building URI for weather request: " + weatherRequest);
 
-            uriBuilder.queryParam("q", weatherRequest.country());
+            uriBuilder.queryParam("q", weatherRequest.location());
             uriBuilder.queryParam("key", weatherApiKey);
-
+            System.out.println("URI: " + uriBuilder.build());
             return uriBuilder.build();
         }).retrieve().body(WeatherResponse.class);
     }
