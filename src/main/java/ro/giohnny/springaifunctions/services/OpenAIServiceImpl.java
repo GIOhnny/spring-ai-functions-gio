@@ -11,14 +11,12 @@ import org.springframework.ai.model.function.FunctionCallback;
 import org.springframework.ai.openai.OpenAiChatModel;
 import org.springframework.ai.openai.OpenAiChatOptions;
 import org.springframework.beans.factory.annotation.Value;
+import ro.giohnny.springaifunctions.functions.StockServiceFunction;
 import ro.giohnny.springaifunctions.functions.WeatherServiceFunction;
-import ro.giohnny.springaifunctions.model.Answer;
-import ro.giohnny.springaifunctions.model.Question;
+import ro.giohnny.springaifunctions.model.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.ai.chat.model.ChatModel;
 import org.springframework.stereotype.Service;
-import ro.giohnny.springaifunctions.model.WeatherRequest;
-import ro.giohnny.springaifunctions.model.WeatherResponse;
 
 import java.util.List;
 
@@ -33,7 +31,33 @@ public class OpenAIServiceImpl implements OpenAIService {
     @Value("${sfg.aiapp.weatherApiKey}")
     private String weatherApiKey;
 
+    @Value("${sfg.aiapp.ninjaApiKey}")
+    private String ninjaApiKey;
+
     private final OpenAiChatModel openAiChatModel;
+
+    @Override
+    public Answer getStockPrice(Question question) {
+        var promptOptions = OpenAiChatOptions.builder()
+                .functionCallbacks(List.of(FunctionCallback.builder()
+                        .function("StockPrice", new StockServiceFunction(ninjaApiKey))
+                        .description("Get the stock value for the ticker")
+                        .inputType(StockRequest.class)
+                        .responseConverter(response -> {
+                            String schema = ModelOptionsUtils.getJsonSchema(StockResponse.class, false);
+                            String json = ModelOptionsUtils.toJsonString(response);
+                            return schema + "\n" + json;
+                        })
+                        .build()))
+                .build();
+
+        Message userMessage = new PromptTemplate(question.question()).createMessage();
+        Message systemMessage = new SystemPromptTemplate("You are a stock Price service. You receive stock price information from a service. You must give all the available details for the queried ticker.").createMessage();
+
+        var response = openAiChatModel.call(new Prompt(List.of(userMessage, systemMessage), promptOptions));
+
+        return new Answer(response.getResult().getOutput().getContent());
+    }
 
     @Override
     public Answer getAnswer(Question question) {
@@ -42,11 +66,11 @@ public class OpenAIServiceImpl implements OpenAIService {
                         .function("CurrentWeather", new WeatherServiceFunction(weatherApiKey))
                         .description("Get the current weather in location")
                         .inputType(WeatherRequest.class)
-/*                        .responseConverter(response -> {
+                        .responseConverter(response -> {
                             String schema = ModelOptionsUtils.getJsonSchema(WeatherResponse.class, false);
                             String json = ModelOptionsUtils.toJsonString(response);
                             return schema + "\n" + json;
-                        })*/
+                        })
                         .build()))
                 .build();
 

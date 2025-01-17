@@ -10,4 +10,5 @@ import ro.giohnny.springaifunctions.model.Question;
 public interface OpenAIService {
 
     Answer getAnswer(Question question);
+    Answer getStockPrice(Question question);
 }

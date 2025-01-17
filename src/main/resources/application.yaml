@@ -11,3 +11,4 @@ spring:
 sfg:
   aiapp:
     weatherApiKey: ${WEATHER_API_KEY}
+    ninjaApiKey: ${NINJA_API_KEY}
